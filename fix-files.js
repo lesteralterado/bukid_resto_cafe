@@ -1,0 +1,1 @@
+const fs=require('fs');fs.readdirSync('src/components').forEach(f=>{if(f.endsWith('.tsx')){let c=fs.readFileSync('src/components/'+f,'utf8').replace(/\[rgba\(([^)]+)\)\]/g,'[rgba()]');fs.writeFileSync('src/components/'+f,c)}});console.log('done')
