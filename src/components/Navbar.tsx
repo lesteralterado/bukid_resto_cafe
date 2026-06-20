@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between py-6 px-6 md:px-10 w-full relative z-10">
       <div className="flex-1 hidden md:block" />
-      <ul className="hidden md:flex items-center gap-8 text-[rgb(45,45,45)] font-normal text-sm">
+      <ul className="hidden md:flex items-center gap-8 text-white font-normal text-sm">
         <li className="cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-1 group">Ecosystem</li>
         <li className="cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-1 group">
           Economics <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -16,7 +16,7 @@ export default function Navbar() {
         </li>
       </ul>
       <div className="md:hidden">
-        <span className="font-regular tracking-tighter text-xl text-[rgba(30,50,90,0.9)]">RIVR</span>
+        <span className="font-regular tracking-tighter text-xl text-white">RIVR</span>
       </div>
       <div className="flex-1 flex justify-end">
         <motion.button
