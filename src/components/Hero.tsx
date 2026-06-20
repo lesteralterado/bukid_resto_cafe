@@ -14,14 +14,17 @@ export default function Hero() {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover object-[65%] lg:object-center z-0"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4"
+          src="https://res.cloudinary.com/dhxi75eld/video/upload/v1781970485/kling_20260620_VIDEO_Cinematic__6060_0_mptyqg.mp4"
         />
+        <div className="absolute inset-0 z-[1] bg-black/25" />
         <div className="relative z-10 w-full h-full flex flex-col items-center">
           <Navbar />
           <div className="w-full flex flex-col items-center pt-8 px-6 text-center max-w-4xl">
             <HeroBadge />
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] font-normal text-[#5E6470] mb-2 tracking-tight leading-[1.05]"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] font-normal 
+              text-[#FFFFFF] 
+              mb-2 tracking-tight leading-[1.05]"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -29,7 +32,7 @@ export default function Hero() {
               Fluid Asset Streams
             </motion.h1>
             <motion.p
-              className="text-sm sm:text-base md:text-lg text-[#5E6470] opacity-80 leading-relaxed max-w-xl font-normal"
+              className="text-sm sm:text-base md:text-lg text-[#FFFFFF] opacity-80 leading-relaxed max-w-xl font-normal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
