@@ -11,8 +11,8 @@ export default function DecorativeMap() {
     }
 
     const map = L.map(mapRef.current, {
-      center: [20, 0],
-      zoom: 2,
+      center: [10.121966, 123.518625],
+      zoom: 15,
       scrollWheelZoom: true,
       touchZoom: true,
       dragging: true,
@@ -23,6 +23,11 @@ export default function DecorativeMap() {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 18,
     }).addTo(map);
+
+    L.marker([10.121966, 123.518625])
+      .addTo(map)
+      .bindPopup('Bukid Resto Cafe<br>4F7M+W93, Barili, Cebu')
+      .openPopup();
 
     const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize();
