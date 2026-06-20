@@ -2,7 +2,11 @@ import { motion } from 'motion/react';
 import { ArrowUpRight, ChevronRight } from 'lucide-react';
 import { useCallback } from 'react';
 
-export default function Navbar() {
+type NavbarProps = {
+  onReserveTable?: () => void;
+};
+
+export default function Navbar({ onReserveTable }: NavbarProps) {
   const scrollTo = useCallback((id: string) => {
     const el = document.getElementById(id);
     el?.scrollIntoView({ behavior: 'smooth' });
@@ -15,7 +19,7 @@ export default function Navbar() {
         <li>
           <a
             href="#about"
-            className="cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-1 group"
+            className="cursor-pointer hover:opacity-70 transition-opacity"
             onClick={(event) => {
               event.preventDefault();
               scrollTo('about');
@@ -39,7 +43,7 @@ export default function Navbar() {
         <li>
           <a
             href="#featured-dishes"
-            className="cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-1 group"
+            className="cursor-pointer hover:opacity-70 transition-opacity"
             onClick={(event) => {
               event.preventDefault();
               scrollTo('featured-dishes');
@@ -68,6 +72,7 @@ export default function Navbar() {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={onReserveTable}
           className="flex items-center bg-[rgba(30,50,90,0.8)] text-white rounded-full pl-2 pr-4 md:pr-6 py-1.5 md:py-2 gap-2 md:gap-3 hover:bg-[rgba(30,50,90,1)] transition-colors group"
         >
           <div className="bg-white/20 p-1 md:p-1.5 rounded-full flex items-center justify-center">
@@ -79,4 +84,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
