@@ -29,7 +29,7 @@ export default function Hero() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Fluid Asset Streams
+              A peaceful dining escape in the heart of nature
             </motion.h1>
             <motion.p
               className="text-sm sm:text-base md:text-lg text-[#FFFFFF] opacity-80 leading-relaxed max-w-xl font-normal"
@@ -37,7 +37,7 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Access Smart Vaults, stake RIVR, NFTs, transform rigid holdings into liquid cash instantly.
+              Enjoy fresh food, signature coffee, scenic mountain views, and warm hospitality at Bukid Resto Cafe.
             </motion.p>
           </div>
           <BottomLeftCard />
