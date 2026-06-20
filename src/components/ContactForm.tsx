@@ -98,11 +98,11 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="w-full px-6 pb-12 md:px-10 lg:pb-16">
+    <section id="contact" className="w-full px-6 pb-12 md:px-10 lg:pb-16" aria-labelledby="contact-title">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="rounded-[2rem] bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur sm:p-8 lg:p-10">
           <p className="text-xs uppercase tracking-[0.3em] text-[#8b919d]">Contact</p>
-          <h2 className="mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl">
+          <h2 id="contact-title" className="mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl">
             Tell us how we can help
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#5e6470] opacity-80">
