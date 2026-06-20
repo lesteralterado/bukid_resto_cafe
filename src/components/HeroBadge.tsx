@@ -9,7 +9,7 @@ export default function HeroBadge() {
       transition={{ duration: 0.6, delay: 0.1 }}
     >
       <span className="h-2 w-2 rounded-full bg-emerald-400" />
-      Smart liquidity infrastructure
+      Nature, food, and unforgettable views.
     </motion.div>
   );
 }
