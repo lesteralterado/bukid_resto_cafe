@@ -23,6 +23,9 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
+import {
+  GridSkeleton,
+} from './ui/Skeleton';
 
 type SectionHeadingProps = {
   eyebrow: string;
@@ -66,6 +69,10 @@ type Review = {
 type EventType = {
   title: string;
   description: string;
+};
+
+type LandingSectionsProps = {
+  loading?: boolean;
 };
 
 const sectionShell = 'w-full px-6 py-16 md:px-10 lg:py-24';
@@ -202,6 +209,21 @@ const reviews: Review[] = [
     role: 'Regular Guest',
   },
   {
+    quote: 'Accomodating kaayu ang mga staff ari, super bet! then the view? It\'s giving!! :)',
+    author: 'Happy Guest',
+    role: 'Local Visitor',
+  },
+  {
+    quote: 'The staff made our visit feel extra special. The food, the view, and the cozy vibe are all worth coming back for.',
+    author: 'Guest',
+    role: 'Weekend Visitor',
+  },
+  {
+    quote: 'A relaxing place to enjoy good meals with nature around you. Perfect for catching up with friends and family.',
+    author: 'Guest',
+    role: 'Family Guest',
+  },
+  {
     quote: 'One of the best hidden gems in Cebu! The mountain view during sunset is unforgettable.',
     author: 'John D.',
     role: 'Food Blogger',
@@ -306,15 +328,15 @@ function PlaceholderImage({
   );
 }
 
-export default function LandingSections() {
+export default function LandingSections({ loading }: LandingSectionsProps) {
   return (
     <>
-      <AboutSection />
-      <WhyVisitSection />
-      <FeaturedDishesSection />
-      <GallerySection />
-      <ReviewsSection />
-      <EventsReservationsSection />
+      {loading ? <AboutSkeleton /> : <AboutSection />}
+      {loading ? <WhyVisitSkeleton /> : <WhyVisitSection />}
+      {loading ? <FeaturedDishesSkeleton /> : <FeaturedDishesSection />}
+      {loading ? <GallerySkeleton /> : <GallerySection />}
+      {loading ? <ReviewsSkeleton /> : <ReviewsSection />}
+      {loading ? <EventsSkeleton /> : <EventsReservationsSection />}
     </>
   );
 }
@@ -359,6 +381,45 @@ function AboutSection() {
   );
 }
 
+function AboutSkeleton() {
+  return (
+    <section id="about" className={sectionShell} aria-labelledby="about-title">
+      <div className={sectionContainer}>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="h-3 w-32 mx-auto rounded-md bg-white/50 animate-pulse" />
+          <div className="mt-3 h-10 w-3/4 mx-auto rounded-2xl bg-white/50 animate-pulse" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-4/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+          </div>
+        </div>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+          <div className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
+            <div className="space-y-3">
+              <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
+            </div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-1">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
+                <div className="flex flex-col gap-3">
+                  <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function WhyVisitSection() {
   return (
     <section id="why-visit" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="why-visit-title">
@@ -378,6 +439,35 @@ function WhyVisitSection() {
               <h3 className="text-xl font-normal text-[#2d2d2d]">{point.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-[#5e6470] opacity-80">{point.description}</p>
             </SectionCard>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhyVisitSkeleton() {
+  return (
+    <section id="why-visit" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="why-visit-title">
+      <div className={sectionContainer}>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="h-3 w-20 mx-auto rounded-md bg-white/50 animate-pulse" />
+          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+          </div>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur flex flex-col">
+              <div className="mb-5 h-12 w-12 rounded-full bg-white/70 animate-pulse" />
+              <div className="h-5 w-4/5 rounded-md bg-white/60 animate-pulse" />
+              <div className="mt-3 space-y-2">
+                <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -409,6 +499,24 @@ function FeaturedDishesSection() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturedDishesSkeleton() {
+  return (
+    <section id="featured-dishes" className={sectionShell} aria-labelledby="featured-dishes-title">
+      <div className={sectionContainer}>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="h-3 w-28 mx-auto rounded-md bg-white/50 animate-pulse" />
+          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+          </div>
+        </div>
+        <GridSkeleton count={8} className="mt-10 gap-6 sm:grid-cols-2 lg:grid-cols-4" />
       </div>
     </section>
   );
@@ -450,6 +558,24 @@ function GallerySection() {
   );
 }
 
+function GallerySkeleton() {
+  return (
+    <section id="gallery" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="gallery-title">
+      <div className={sectionContainer}>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="h-3 w-20 mx-auto rounded-md bg-white/50 animate-pulse" />
+          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+          </div>
+        </div>
+        <GridSkeleton count={7} className="mt-10 gap-4 sm:grid-cols-2 lg:grid-cols-4" />
+      </div>
+    </section>
+  );
+}
+
 function ReviewsSection() {
   return (
     <section id="reviews" className={sectionShell} aria-labelledby="reviews-title">
@@ -463,6 +589,48 @@ function ReviewsSection() {
         <div className="mt-12 space-y-4">
           <MarqueeRow reviews={reviews} direction="left" />
           <MarqueeRow reviews={reviews} direction="right" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReviewsSkeleton() {
+  return (
+    <section id="reviews" className={sectionShell} aria-labelledby="reviews-title">
+      <div className={sectionContainer}>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="h-3 w-28 mx-auto rounded-md bg-white/50 animate-pulse" />
+          <div className="mt-3 h-10 w-3/4 mx-auto rounded-2xl bg-white/50 animate-pulse" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
+            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
+          </div>
+        </div>
+        <div className="mt-12 space-y-4">
+          <div className="flex gap-6 overflow-hidden">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
+                <div className="flex items-center gap-1 mb-4">
+                  {[0, 1, 2, 3, 4].map((star) => (
+                    <div key={star} className="h-4 w-4 rounded-sm bg-white/70 animate-pulse" />
+                  ))}
+                </div>
+                <div className="space-y-2 mb-4">
+                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-white/70 animate-pulse" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-24 rounded-md bg-white/60 animate-pulse" />
+                    <div className="h-3 w-16 rounded-md bg-white/40 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -569,6 +737,47 @@ function EventsReservationsSection() {
               Use the reservation form to share your event date, guest count, and venue requests.
             </p>
           </SectionCard>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function EventsSkeleton() {
+  return (
+    <section id="events" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="events-title">
+      <div className={sectionContainer}>
+        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <div className="h-3 w-32 rounded-md bg-white/50 animate-pulse" />
+            <div className="mt-3 h-10 w-4/5 rounded-2xl bg-white/50 animate-pulse" />
+            <div className="mt-4 space-y-2">
+              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="rounded-[1.5rem] bg-white/70 p-5 ring-1 ring-black/5 backdrop-blur">
+                  <div className="mb-4 h-11 w-11 rounded-full bg-white/70 animate-pulse" />
+                  <div className="h-5 w-4/5 rounded-md bg-white/60 animate-pulse" />
+                  <div className="mt-2 space-y-2">
+                    <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                    <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8 flex flex-col justify-center text-center">
+            <div className="mx-auto mb-6 h-16 w-16 rounded-full bg-emerald-100 animate-pulse" />
+            <div className="h-7 w-4/5 mx-auto rounded-2xl bg-white/60 animate-pulse" />
+            <div className="mt-4 space-y-2 mx-auto max-w-xs">
+              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
+            </div>
+            <div className="mt-6 h-10 w-40 mx-auto rounded-full bg-[rgba(30,50,90,0.4)] animate-pulse" />
+            <div className="mt-4 h-3 w-48 mx-auto rounded-md bg-white/30 animate-pulse" />
+          </div>
         </div>
       </div>
     </section>

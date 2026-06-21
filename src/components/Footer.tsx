@@ -1,3 +1,9 @@
+import { FooterSkeleton } from './ui/Skeleton';
+
+type FooterProps = {
+  loading?: boolean;
+};
+
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <a href={href} className="text-sm leading-relaxed text-[#5e6470] opacity-80 transition hover:opacity-100">
@@ -6,7 +12,11 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   );
 }
 
-export default function Footer() {
+export default function Footer({ loading }: FooterProps) {
+  if (loading) {
+    return <FooterSkeleton />;
+  }
+
   return (
     <footer className="w-full bg-[#2d2d2d] px-6 py-10 text-white md:px-10">
       <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">

@@ -1,4 +1,9 @@
+import { FormSkeleton } from './ui/Skeleton';
 import { useReservationForm, type FormErrors } from '../hooks/useReservationForm';
+
+type ContactFormProps = {
+  loading?: boolean;
+};
 
 type FormData = {
   name: string;
@@ -23,7 +28,7 @@ const validate = (values: FormData): FormErrors<FormData> => {
   const nextErrors: FormErrors<FormData> = {};
   if (!values.name.trim()) nextErrors.name = 'Name is required.';
   if (!values.email.trim()) nextErrors.email = 'Email is required.';
-  else if (!emailPattern.test(values.email.trim())) nextErrors.email = 'Enter a valid email address.';
+  else if (emailPattern.test(values.email.trim())) nextErrors.email = 'Enter a valid email address.';
   if (values.phone.trim() && !phonePattern.test(values.phone.trim())) nextErrors.phone = 'Enter a valid phone number.';
   if (!values.subject.trim()) nextErrors.subject = 'Subject is required.';
   if (!values.message.trim()) nextErrors.message = 'Message is required.';
@@ -31,8 +36,37 @@ const validate = (values: FormData): FormErrors<FormData> => {
   return nextErrors;
 };
 
-export default function ContactForm() {
+export default function ContactForm({ loading }: ContactFormProps) {
   const { values, errors, submitted, updateField, handleSubmit } = useReservationForm(initialFormState, validate);
+
+  if (loading) {
+    return (
+      <section id="contact" className="w-full px-6 pb-12 md:px-10 lg:pb-16" aria-labelledby="contact-title">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div className="rounded-[2rem] bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur sm:p-8 lg:p-10">
+            <div className="space-y-4">
+              <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
+              <div className="h-8 w-3/4 rounded-2xl bg-white/50 animate-pulse" />
+              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
+              <div className="mt-8 space-y-4">
+                <div className="space-y-1">
+                  <div className="h-3 w-12 rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                </div>
+                <div className="space-y-1">
+                  <div className="h-3 w-12 rounded-md bg-white/50 animate-pulse" />
+                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <FormSkeleton />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="contact" className="w-full px-6 pb-12 md:px-10 lg:pb-16" aria-labelledby="contact-title">
