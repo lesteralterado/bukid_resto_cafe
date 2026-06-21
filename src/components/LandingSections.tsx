@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 
 type SectionHeadingProps = {
   eyebrow: string;
@@ -59,6 +60,7 @@ type GalleryItem = {
 type Review = {
   quote: string;
   author: string;
+  role?: string;
 };
 
 type EventType = {
@@ -197,14 +199,32 @@ const reviews: Review[] = [
   {
     quote: 'Amazing food and beautiful scenery. Perfect place for family gatherings.',
     author: 'Maria S.',
+    role: 'Regular Guest',
   },
   {
-    quote: 'One of the best hidden gems in Cebu!',
+    quote: 'One of the best hidden gems in Cebu! The mountain view during sunset is unforgettable.',
     author: 'John D.',
+    role: 'Food Blogger',
   },
   {
     quote: 'The view, the food, and the service all felt relaxing and welcoming.',
     author: 'Anna L.',
+    role: 'Local Visitor',
+  },
+  {
+    quote: 'Best grilled pork belly I have ever tasted. Will definitely come back!',
+    author: 'Pedro C.',
+    role: 'First-time Visitor',
+  },
+  {
+    quote: 'Our family reunion was perfect here. The kids loved the open spaces.',
+    author: 'Elena M.',
+    role: 'From Mandaue',
+  },
+  {
+    quote: 'Coffee with a view - what more can you ask for? Simply perfect.',
+    author: 'Carlos R.',
+    role: 'Coffee Enthusiast',
   },
 ];
 
@@ -436,25 +456,68 @@ function ReviewsSection() {
       <div className={sectionContainer}>
         <SectionHeading
           eyebrow="Customer Reviews"
-          title="Guests love the food, views, and atmosphere"
+          title="What our guests are saying"
           description="Real experiences from visitors who came for the scenery and stayed for the moments."
         />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {reviews.map((review) => (
-            <SectionCard key={review.author}>
-              <div className="flex items-center gap-1 text-[#d99a22]" aria-label="Five star review">
-                {[0, 1, 2, 3, 4].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-current" aria-hidden="true" />
-                ))}
-              </div>
-              <p className="mt-5 text-base leading-relaxed text-[#2d2d2d]">"{review.quote}"</p>
-              <p className="mt-5 text-sm font-normal text-[#8b919d]">— {review.author}</p>
-            </SectionCard>
-          ))}
+        <div className="mt-12 space-y-4">
+          <MarqueeRow reviews={reviews} direction="left" />
+          <MarqueeRow reviews={reviews} direction="right" />
         </div>
       </div>
     </section>
+  );
+}
+
+function MarqueeRow({ reviews, direction }: { reviews: Review[]; direction: 'left' | 'right' }) {
+  const duplicatedReviews = [...reviews, ...reviews];
+
+  return (
+    <div className="relative overflow-hidden">
+      <motion.div
+        className="flex gap-6"
+        animate={{
+          x: direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'],
+        }}
+        transition={{
+          x: {
+            duration: 30,
+            ease: 'linear',
+            repeat: Infinity,
+          },
+        }}
+      >
+        {duplicatedReviews.map((review, i) => (
+          <TestimonialCard key={`${review.author}-${i}`} review={review} />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+function TestimonialCard({ review }: { review: Review }) {
+  return (
+    <div className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
+      <div className="flex items-center gap-1 mb-4 text-[#d99a22]" aria-label="Five star review">
+        {[0, 1, 2, 3, 4].map((star) => (
+          <Star key={star} className="h-4 w-4 fill-current" aria-hidden="true" />
+        ))}
+      </div>
+      <p className="text-base leading-relaxed text-[#2d2d2d] mb-4">
+        &quot;{review.quote}&quot;
+      </p>
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center">
+          <span className="text-sm font-medium text-emerald-800">
+            {review.author.charAt(0)}
+          </span>
+        </div>
+        <div>
+          <p className="font-normal text-[#2d2d2d] text-sm">{review.author}</p>
+          <p className="text-[#8b919d] text-xs">{review.role}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -464,7 +527,7 @@ function EventsReservationsSection() {
       <div className={sectionContainer}>
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
-            <p className={eyebrowText}>Events & Reservations</p>
+            <p className={eyebrowText}>Events &amp; Reservations</p>
             <h2 id="events-title" className="mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl">
               Planning a special event?
             </h2>

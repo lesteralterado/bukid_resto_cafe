@@ -27,3 +27,9 @@ body {
   overflow-x: hidden;
   background-color: #f0f0f0;
 }
+
+.organic-blob-frame {
+  border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%;
+  clip-path: polygon(10% 0, 30% 5%, 50% 0, 72% 8%, 93% 16%, 100% 38%, 92% 62%, 100% 82%, 78% 96%, 52% 91%, 32% 100%, 10% 90%, 0 72%, 7% 48%, 0 22%);
+  transform: rotate(-1.5deg);
+}
