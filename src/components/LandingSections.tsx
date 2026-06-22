@@ -59,6 +59,7 @@ type GalleryItem = {
   icon: LucideIcon;
   label: string;
   className: string;
+  image?: string;
 };
 
 type Review = {
@@ -113,48 +114,62 @@ const dishes: Dish[] = [
     label: 'Signature Grill',
     title: 'Grilled Pork Belly',
     description: 'Tender, smoky pork belly served with a savory dipping sauce and rice.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/714363738_122115168621043826_1941352113389072552_n_kiewlo.jpg',
   },
   {
     icon: Salad,
     label: 'Seafood Feast',
     title: 'Seafood Platter',
     description: 'A generous mix of grilled seafood made for sharing.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/721881103_122116111761043826_2008001494691661035_n_lhgr6i.jpg',
   },
   {
     icon: Coffee,
     label: 'House Brew',
     title: 'Signature Coffee',
     description: 'A rich local-inspired coffee blend crafted for slow afternoons.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/722754957_122116618275043826_3405707230625711570_n_jazmko.jpg',
   },
   {
     icon: Heart,
     label: 'Sweet Treats',
     title: 'Homemade Desserts',
     description: 'Freshly prepared desserts with a homemade taste.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724124419_122116240557043826_8655294559173541423_n_vnivo9.jpg',
   },
   {
     icon: ChefHat,
     label: 'Cafe Favorite',
     title: 'Bukid Breakfast Plate',
     description: 'A hearty breakfast plate with eggs, toast, and seasonal sides.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724770276_122116618293043826_4494773150655047075_n_yduh26.jpg',
   },
   {
     icon: UtensilsCrossed,
     label: 'Comfort Meal',
     title: 'Creamy Pasta',
     description: 'Creamy pasta tossed with savory sauce and fresh herbs.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724612779_122116618305043826_8041142901930317140_n_rdm3av.jpg',
   },
   {
     icon: Leaf,
     label: 'Light Bite',
     title: 'Garden Salad',
     description: 'Crisp greens, fresh vegetables, and a bright house dressing.',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/722754957_122116618275043826_3405707230625711570_n_jazmko.jpg',
   },
   {
     icon: Wine,
     label: 'Cool Refreshment',
     title: 'Mountain Fruit Shake',
     description: 'A chilled fruit shake made with refreshing local flavors.',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/714363738_122115168621043826_1941352113389072552_n_kiewlo.jpg',
   },
   {
     icon: UtensilsCrossed,
@@ -196,42 +211,63 @@ const galleryItems: GalleryItem[] = [
     label: 'Cafe Exterior',
     title: 'A calm entrance surrounded by nature',
     className: 'from-emerald-100 to-emerald-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986287/filipino-chicken-inasal-579_uctfaw.webp',
   },
   {
     icon: UtensilsCrossed,
     label: 'Dining Area',
     title: 'Comfortable dining spaces for every gathering',
     className: 'from-amber-100 to-amber-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986287/2021-06-21_atk-2597_ehz71m.webp',
   },
   {
     icon: Mountain,
     label: 'Mountain Views',
     title: 'Wide green views from the cafe',
     className: 'from-sky-100 to-sky-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/727277141_122116941993043826_164577610010474343_n_cfcqlm.jpg',
   },
   {
     icon: Sunset,
     label: 'Sunset Moments',
     title: 'Golden-hour views for a memorable visit',
     className: 'from-orange-100 to-orange-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/725518739_122116490505043826_6411777298136620101_n_wzgmer.jpg',
   },
   {
     icon: Users,
     label: 'Guests Dining',
     title: 'Shared meals with family and friends',
     className: 'from-rose-100 to-rose-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/726576194_1695073944976241_8577567113806243605_n_acjbwv.jpg',
   },
   {
     icon: Camera,
     label: 'Photo Spots',
     title: 'Beautiful corners made for photos',
     className: 'from-violet-100 to-violet-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/722754957_122116618275043826_3405707230625711570_n_jazmko.jpg',
   },
   {
     icon: Coffee,
     label: 'Coffee Break',
     title: 'Warm drinks with a peaceful view',
     className: 'from-lime-100 to-lime-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/726576194_1695073944976241_8577567113806243605_n_acjbwv.jpg',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Aromatic Meal',
+    title: 'Savoring a delicious Bukid Resto Cafe signature dish',
+    className: 'from-emerald-100 to-emerald-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/726576194_1695073944976241_8577567113806243605_n_acjbwv.jpg',
+  },
+  {
+    icon: Coffee,
+    label: 'Cozy Corner',
+    title: 'A quiet corner perfect for unwinding',
+    className: 'from-amber-100 to-amber-200',
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/727277141_122116941993043826_164577610010474343_n_cfcqlm.jpg',
   },
 ];
 
@@ -574,18 +610,24 @@ function GallerySection() {
             <div
               key={item.title}
               className={`group overflow-hidden rounded-[2rem] bg-gradient-to-br ${item.className} p-3 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur`}
-            >
-              <div className="relative h-48 overflow-hidden rounded-[1.5rem] bg-white/30">
-                <item.icon className="absolute right-4 top-4 h-10 w-10 text-white/70" aria-hidden="true" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <item.icon className="h-20 w-20 text-white/60" aria-hidden="true" />
+              >
+                <div className="relative h-48 overflow-hidden rounded-[1.5rem] bg-white/30">
+                  {item.image ? (
+                    <img src={item.image} alt={item.title} className="h-48 w-full object-cover" loading="lazy" />
+                  ) : (
+                    <>
+                      <item.icon className="absolute right-4 top-4 h-10 w-10 text-white/70" aria-hidden="true" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <item.icon className="h-20 w-20 text-white/60" aria-hidden="true" />
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 p-4">
+                        <span className="rounded-full bg-white/75 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
+                          {item.label}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <span className="rounded-full bg-white/75 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
-                    {item.label}
-                  </span>
-                </div>
-              </div>
               <p className="mt-4 px-1 text-sm leading-relaxed text-[#5e6470] opacity-80">{item.title}</p>
             </div>
           ))}
