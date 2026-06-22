@@ -687,28 +687,32 @@ function ReviewsSkeleton() {
           </div>
         </div>
         <div className="mt-12 space-y-4">
-          <div className="flex gap-6 overflow-hidden">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
-                <div className="flex items-center gap-1 mb-4">
-                  {[0, 1, 2, 3, 4].map((star) => (
-                    <div key={star} className="h-4 w-4 rounded-sm bg-white/70 animate-pulse" />
-                  ))}
-                </div>
-                <div className="space-y-2 mb-4">
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-white/70 animate-pulse" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-24 rounded-md bg-white/60 animate-pulse" />
-                    <div className="h-3 w-16 rounded-md bg-white/40 animate-pulse" />
+          <div className="relative overflow-hidden">
+            <div className="mx-auto max-w-6xl px-6 md:px-10">
+              <div className="flex gap-6">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
+                    <div className="flex items-center gap-1 mb-4">
+                      {[0, 1, 2, 3, 4].map((star) => (
+                        <div key={star} className="h-4 w-4 rounded-sm bg-white/70 animate-pulse" />
+                      ))}
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                      <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
+                      <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-white/70 animate-pulse" />
+                      <div className="space-y-2">
+                        <div className="h-3 w-24 rounded-md bg-white/60 animate-pulse" />
+                        <div className="h-3 w-16 rounded-md bg-white/40 animate-pulse" />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
@@ -721,23 +725,25 @@ function MarqueeRow({ reviews, direction }: { reviews: Review[]; direction: 'lef
 
   return (
     <div className="relative overflow-hidden">
-      <motion.div
-        className="flex gap-6"
-        animate={{
-          x: direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'],
-        }}
-        transition={{
-          x: {
-            duration: 30,
-            ease: 'linear',
-            repeat: Infinity,
-          },
-        }}
-      >
-        {duplicatedReviews.map((review, i) => (
-          <TestimonialCard key={`${review.author}-${i}`} review={review} />
-        ))}
-      </motion.div>
+      <div className="mx-auto max-w-6xl px-6 md:px-10">
+        <motion.div
+          className="flex gap-6"
+          animate={{
+            x: direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'],
+          }}
+          transition={{
+            x: {
+              duration: 30,
+              ease: 'linear',
+              repeat: Infinity,
+            },
+          }}
+        >
+          {duplicatedReviews.map((review, i) => (
+            <TestimonialCard key={`${review.author}-${i}`} review={review} />
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }
