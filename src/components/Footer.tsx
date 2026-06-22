@@ -46,7 +46,7 @@ export default function Footer({ loading }: FooterProps) {
             <a href="mailto:hello@bukidcafe.example" className="transition hover:text-white">
               hello@bukidcafe.example
             </a>
-            <span>Daily, 8:00 AM to 9:00 PM</span>
+            <span>Daily, 10:00 AM to 10:00 PM</span>
             <span>Bukid Resto Cafe, Cebu</span>
           </div>
         </div>

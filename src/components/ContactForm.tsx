@@ -86,7 +86,7 @@ export default function ContactForm({ loading }: ContactFormProps) {
             </div>
             <div>
               <span className="block text-xs uppercase tracking-[0.25em] text-[#8b919d]">Hours</span>
-              <span className="block mt-1">Daily, 8:00 AM to 9:00 PM</span>
+              <span className="block mt-1">Daily, 10:00 AM to 10:00 PM</span>
             </div>
           </div>
         </div>
