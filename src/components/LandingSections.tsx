@@ -51,6 +51,7 @@ type Dish = {
   description: string;
   icon: LucideIcon;
   label: string;
+  image?: string;
 };
 
 type GalleryItem = {
@@ -154,6 +155,38 @@ const dishes: Dish[] = [
     label: 'Cool Refreshment',
     title: 'Mountain Fruit Shake',
     description: 'A chilled fruit shake made with refreshing local flavors.',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Pinoy Favorite',
+    title: 'Lumpia',
+    description: 'Crispy rolled appetizer served with a savory dipping sauce.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986844/725457305_122116616475043826_3490672837484293300_n_pbx1ol.jpg',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Classic Bite',
+    title: 'Burger',
+    description: 'A classic burger with savory fillings and a soft bun.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/725518739_122116490505043826_6411777298136620101_n_wzgmer.jpg',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Shareable Combo',
+    title: 'French Fries/Chicken Fingers',
+    description: 'Crispy fries paired with chicken fingers for sharing.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986702/725578823_122116489767043826_2621467015359406155_n_m1pj2u.jpg',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Rice Favorite',
+    title: 'Garlic Fried Rice',
+    description: 'Aromatic fried rice with a savory garlic flavor.',
+    image:
+      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986212/k-photo-2021-05-garlic-fried-rice-02_ayrxfc.webp',
   },
 ];
 
@@ -491,7 +524,11 @@ function FeaturedDishesSection() {
               key={dish.title}
               className="overflow-hidden rounded-[2rem] bg-white/80 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur"
             >
-              <PlaceholderImage icon={dish.icon} label={dish.label} className={dish.title.includes('Coffee') ? 'from-amber-100 to-amber-200' : dish.title.includes('Salad') ? 'from-lime-100 to-lime-200' : dish.title.includes('Shake') ? 'from-sky-100 to-sky-200' : dish.title.includes('Desserts') ? 'from-rose-100 to-rose-200' : 'from-orange-100 to-orange-200'} />
+              {dish.image ? (
+                <img src={dish.image} alt={dish.title} className="h-48 w-full object-cover" loading="lazy" />
+              ) : (
+                <PlaceholderImage icon={dish.icon} label={dish.label} className={dish.title.includes('Coffee') ? 'from-amber-100 to-amber-200' : dish.title.includes('Salad') ? 'from-lime-100 to-lime-200' : dish.title.includes('Shake') ? 'from-sky-100 to-sky-200' : dish.title.includes('Desserts') ? 'from-rose-100 to-rose-200' : 'from-orange-100 to-orange-200'} />
+              )}
               <div className="p-5">
                 <h3 className="text-xl font-normal text-[#2d2d2d]">{dish.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-[#5e6470] opacity-80">{dish.description}</p>
