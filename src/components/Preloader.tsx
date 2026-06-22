@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { Leaf } from "lucide-react";
 
 type PreloaderProps = {
   onComplete: () => void;
@@ -11,8 +10,15 @@ function Preloader({ onComplete }: PreloaderProps) {
 
   const handleSkip = useCallback(() => {
     setSkip(true);
-    onComplete();
-  }, [onComplete]);
+  }, []);
+
+  useEffect(() => {
+    if (!skip) return;
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [skip, onComplete]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,13 +38,11 @@ function Preloader({ onComplete }: PreloaderProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [handleSkip]);
 
-  if (skip) return null;
-
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: skip ? 0 : 1, y: skip ? "-100%" : 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#2d2d2d] cursor-pointer"
       role="button"
       tabIndex={0}
@@ -52,7 +56,7 @@ function Preloader({ onComplete }: PreloaderProps) {
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           className="flex h-20 w-20 items-center justify-center rounded-full bg-white/10 text-emerald-200"
         >
-          <Leaf className="h-10 w-10" />
+          <img src="/favicon2.svg" alt="Bukid Resto Cafe" className="h-10 w-10" />
         </motion.div>
         <div>
           <h1 className="text-2xl font-normal tracking-tight text-white md:text-3xl">
