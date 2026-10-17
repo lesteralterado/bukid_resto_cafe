@@ -1,25 +1,30 @@
-import { FormSkeleton } from './ui/Skeleton';
+import { useCallback, useEffect } from 'react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useReservationForm, type FormErrors } from '../hooks/useReservationForm';
-
-type ContactFormProps = {
-  loading?: boolean;
-};
+import { submitLead } from '../services/submitLead';
+import { track } from '../utils/analytics';
+import { business, telUrl } from '../data/business';
+import ContactFallback from './ContactFallback';
 
 type FormData = {
   name: string;
-  email: string;
   phone: string;
-  subject: string;
+  email: string;
+  topic: string;
   message: string;
+  company: string; // honeypot
 };
 
 const initialFormState: FormData = {
   name: '',
-  email: '',
   phone: '',
-  subject: '',
+  email: '',
+  topic: 'General question',
   message: '',
+  company: '',
 };
+
+const TOPICS = ['General question', 'Event or venue inquiry', 'Catering', 'Partnership', 'Feedback'];
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[+()0-9\s-]{7,20}$/;
@@ -27,113 +32,145 @@ const phonePattern = /^[+()0-9\s-]{7,20}$/;
 const validate = (values: FormData): FormErrors<FormData> => {
   const nextErrors: FormErrors<FormData> = {};
   if (!values.name.trim()) nextErrors.name = 'Name is required.';
-  if (!values.email.trim()) nextErrors.email = 'Email is required.';
-  else if (emailPattern.test(values.email.trim())) nextErrors.email = 'Enter a valid email address.';
-  if (values.phone.trim() && !phonePattern.test(values.phone.trim())) nextErrors.phone = 'Enter a valid phone number.';
-  if (!values.subject.trim()) nextErrors.subject = 'Subject is required.';
+  if (!values.phone.trim() && !values.email.trim()) nextErrors.phone = 'Add a mobile number or email so we can reply.';
+  if (values.phone.trim() && !phonePattern.test(values.phone.trim())) nextErrors.phone = 'Enter a valid mobile number.';
+  if (values.email.trim() && !emailPattern.test(values.email.trim())) nextErrors.email = 'Enter a valid email address.';
   if (!values.message.trim()) nextErrors.message = 'Message is required.';
   else if (values.message.trim().length < 10) nextErrors.message = 'Message must be at least 10 characters.';
   return nextErrors;
 };
 
-export default function ContactForm({ loading }: ContactFormProps) {
-  const { values, errors, submitted, updateField, handleSubmit } = useReservationForm(initialFormState, validate);
+const inputClass =
+  'mt-2 w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-base sm:text-sm text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]';
+const labelClass = 'block text-sm font-normal text-[#2d2d2d]';
+const errorClass = 'mt-2 text-xs text-[#9f3d36]';
 
-  if (loading) {
-    return (
-      <section id="contact" className="w-full px-6 pb-12 md:px-10 lg:pb-16" aria-labelledby="contact-title">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="rounded-[2rem] bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur sm:p-8 lg:p-10">
-            <div className="space-y-4">
-              <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
-              <div className="h-8 w-3/4 rounded-2xl bg-white/50 animate-pulse" />
-              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
-              <div className="mt-8 space-y-4">
-                <div className="space-y-1">
-                  <div className="h-3 w-12 rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                </div>
-                <div className="space-y-1">
-                  <div className="h-3 w-12 rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                </div>
-              </div>
-            </div>
-          </div>
+export default function ContactForm() {
+  const send = useCallback(async (values: FormData) => {
+    if (values.company) return;
+    const { company: _honeypot, ...lead } = values;
+    void _honeypot;
+    await submitLead('contact', lead);
+    track('contact_submit', { topic: values.topic });
+  }, []);
 
-          <FormSkeleton />
-        </div>
-      </section>
-    );
-  }
+  const { values, errors, status, updateField, handleSubmit } = useReservationForm(initialFormState, validate, send);
+
+  useEffect(() => {
+    if (status === 'error') track('form_error', { form: 'contact' });
+  }, [status]);
+
+  const field = (name: keyof FormData) => ({
+    id: name,
+    name,
+    value: values[name],
+    'aria-invalid': Boolean(errors[name]),
+    'aria-describedby': errors[name] ? `${name}-error` : undefined,
+  });
+  const fieldError = (name: keyof FormData) =>
+    errors[name] && <p id={`${name}-error`} className={errorClass}>{errors[name]}</p>;
 
   return (
     <section id="contact" className="w-full px-6 pb-12 md:px-10 lg:pb-16" aria-labelledby="contact-title">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="rounded-[2rem] bg-white/70 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur sm:p-8 lg:p-10">
-          <p className="text-xs uppercase tracking-[0.3em] text-[#8b919d]">Contact</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-[#6b717d]">Contact</p>
           <h2 id="contact-title" className="mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl">
-            Tell us how we can help
+            Questions? We&apos;re happy to help
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-[#5e6470] opacity-80">
-            Send us a note about reservations, events, catering, partnerships, or anything else you would like to discuss.
+          <p className="mt-4 text-base leading-relaxed text-[#4f5560]">
+            Ask us about events, catering, partnerships, or anything else. We usually reply the same day.
           </p>
-          <div className="mt-8 space-y-4 text-sm leading-relaxed text-[#5e6470]">
+          <dl className="mt-8 space-y-4 text-sm leading-relaxed text-[#4f5560]">
+            {business.phone && telUrl && (
+              <div>
+                <dt className="text-xs uppercase tracking-[0.25em] text-[#6b717d]">Phone / Viber</dt>
+                <dd className="mt-1">
+                  <a href={telUrl} onClick={() => track('call_click', { source: 'contact' })} className="hover:text-[#2d2d2d]">
+                    {business.phone}
+                  </a>
+                </dd>
+              </div>
+            )}
+            {business.email && (
+              <div>
+                <dt className="text-xs uppercase tracking-[0.25em] text-[#6b717d]">Email</dt>
+                <dd className="mt-1">
+                  <a href={`mailto:${business.email}`} className="hover:text-[#2d2d2d]">{business.email}</a>
+                </dd>
+              </div>
+            )}
             <div>
-              <span className="block text-xs uppercase tracking-[0.25em] text-[#8b919d]">Email</span>
-              <span className="block mt-1">hello@bukidcafe.example</span>
+              <dt className="text-xs uppercase tracking-[0.25em] text-[#6b717d]">Hours</dt>
+              <dd className="mt-1">{business.hoursLabel}</dd>
             </div>
-            <div>
-              <span className="block text-xs uppercase tracking-[0.25em] text-[#8b919d]">Hours</span>
-              <span className="block mt-1">Daily, 8:00 AM to 9:00 PM</span>
-            </div>
-          </div>
+          </dl>
+          <ContactFallback source="contact" />
         </div>
 
-        <form noValidate onSubmit={handleSubmit} className="rounded-[2rem] bg-white/85 p-5 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
-          {submitted && (
-            <div className="mb-6 rounded-2xl bg-[#eef7f1] px-4 py-3 text-sm leading-relaxed text-[#2f6b42] ring-1 ring-[#cfe8d6]">
-              Thank you. Your message has been received.
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            <div>
-              <label htmlFor="name" className="block text-sm font-normal text-[#2d2d2d]">Name</label>
-              <input id="name" name="name" type="text" autoComplete="name" value={values.name} onChange={(e) => updateField('name', e.target.value)} aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? 'name-error' : undefined} className="mt-2 w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]" />
-              {errors.name && <p id="name-error" className="mt-2 text-xs text-[#9f3d36]">{errors.name}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-normal text-[#2d2d2d]">Email</label>
-              <input id="email" name="email" type="email" autoComplete="email" value={values.email} onChange={(e) => updateField('email', e.target.value)} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'email-error' : undefined} className="mt-2 w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]" />
-              {errors.email && <p id="email-error" className="mt-2 text-xs text-[#9f3d36]">{errors.email}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-normal text-[#2d2d2d]">Phone</label>
-              <input id="phone" name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={(e) => updateField('phone', e.target.value)} aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? 'phone-error' : undefined} className="mt-2 w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]" />
-              {errors.phone && <p id="phone-error" className="mt-2 text-xs text-[#9f3d36]">{errors.phone}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="subject" className="block text-sm font-normal text-[#2d2d2d]">Subject</label>
-              <input id="subject" name="subject" type="text" value={values.subject} onChange={(e) => updateField('subject', e.target.value)} aria-invalid={Boolean(errors.subject)} aria-describedby={errors.subject ? 'subject-error' : undefined} className="mt-2 w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]" />
-              {errors.subject && <p id="subject-error" className="mt-2 text-xs text-[#9f3d36]">{errors.subject}</p>}
-            </div>
+        {status === 'success' ? (
+          <div className="rounded-[2rem] bg-white/85 p-8 text-center shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur" role="status">
+            <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" aria-hidden="true" />
+            <h3 className="mt-4 text-2xl font-normal text-[#2d2d2d]">Message sent</h3>
+            <p className="mt-3 text-sm leading-relaxed text-[#4f5560]">Thank you! We&apos;ll get back to you soon.</p>
           </div>
+        ) : (
+          <form noValidate onSubmit={handleSubmit} className="relative rounded-[2rem] bg-white/85 p-5 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
+            {status === 'error' && (
+              <div role="alert" className="mb-6 rounded-2xl bg-[#fdf1f0] px-4 py-3 text-sm leading-relaxed text-[#9f3d36] ring-1 ring-[#f3d2cf]">
+                Sorry, your message didn&apos;t go through. Please try again.
+                <ContactFallback source="contact_error" compact />
+              </div>
+            )}
 
-          <div className="mt-5">
-            <label htmlFor="message" className="block text-sm font-normal text-[#2d2d2d]">Message</label>
-            <textarea id="message" name="message" rows={5} value={values.message} onChange={(e) => updateField('message', e.target.value)} aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? 'message-error' : undefined} className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm leading-relaxed text-[#2d2d2d] outline-none transition focus:border-[rgba(30,50,90,0.45)] focus:ring-4 focus:ring-[rgba(30,50,90,0.08)]" />
-            {errors.message && <p id="message-error" className="mt-2 text-xs text-[#9f3d36]">{errors.message}</p>}
-          </div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div>
+                <label htmlFor="name" className={labelClass}>Name</label>
+                <input {...field('name')} type="text" autoComplete="name" onChange={(e) => updateField('name', e.target.value)} className={inputClass} />
+                {fieldError('name')}
+              </div>
 
-          <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[rgba(30,50,90,0.9)] px-6 py-3 text-sm font-normal text-white transition hover:bg-[rgba(30,50,90,1)] focus:outline-none focus:ring-4 focus:ring-[rgba(30,50,90,0.14)]">
-            Send Message
-          </button>
-        </form>
+              <div>
+                <label htmlFor="topic" className={labelClass}>Topic</label>
+                <select {...field('topic')} onChange={(e) => updateField('topic', e.target.value)} className={inputClass}>
+                  {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="phone" className={labelClass}>Mobile number</label>
+                <input {...field('phone')} type="tel" inputMode="tel" autoComplete="tel" onChange={(e) => updateField('phone', e.target.value)} className={inputClass} />
+                {fieldError('phone')}
+              </div>
+
+              <div>
+                <label htmlFor="email" className={labelClass}>Email</label>
+                <input {...field('email')} type="email" autoComplete="email" onChange={(e) => updateField('email', e.target.value)} className={inputClass} />
+                {fieldError('email')}
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <label htmlFor="message" className={labelClass}>Message</label>
+              <textarea {...field('message')} rows={5} onChange={(e) => updateField('message', e.target.value)} className={`${inputClass} resize-none leading-relaxed`} />
+              {fieldError('message')}
+            </div>
+
+            <div className="absolute -left-[9999px]" aria-hidden="true">
+              <label htmlFor="company">Company</label>
+              <input {...field('company')} type="text" tabIndex={-1} autoComplete="off" onChange={(e) => updateField('company', e.target.value)} />
+            </div>
+
+            <button
+              type="submit"
+              disabled={status === 'submitting'}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[rgba(30,50,90,0.9)] px-6 py-3 text-sm font-normal text-white transition hover:bg-[rgba(30,50,90,1)] focus:outline-none focus:ring-4 focus:ring-[rgba(30,50,90,0.14)] disabled:opacity-70"
+            >
+              {status === 'submitting' && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+              {status === 'submitting' ? 'Sending…' : 'Send Message'}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );

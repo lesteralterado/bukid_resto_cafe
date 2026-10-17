@@ -1,35 +1,29 @@
 @import 'tailwindcss';
 
-@font-face {
-    font-family: 'Helvetica Regular';
-    src: url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot');
-    src: url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.eot?#iefix')format('embedded-opentype'),
-    url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff2')format('woff2'),
-    url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff')format('woff'),
-    url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.ttf')format('truetype'),
-    url('https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.svg#Helvetica Regular')format('svg');
-}
-
+/* Apple system font stack: SF Pro on iPhone/Mac, zero download, no licensing risk. */
 @theme {
-  --font-helvetica: 'Helvetica Regular', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Helvetica, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 :root {
-  font-family: var(--font-helvetica);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
   overflow-x: hidden;
   background-color: #f0f0f0;
-}
-
-.organic-blob-frame {
-  border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%;
-  clip-path: polygon(10% 0, 30% 5%, 50% 0, 72% 8%, 93% 16%, 100% 38%, 92% 62%, 100% 82%, 78% 96%, 52% 91%, 32% 100%, 10% 90%, 0 72%, 7% 48%, 0 22%);
-  transform: rotate(-1.5deg);
 }

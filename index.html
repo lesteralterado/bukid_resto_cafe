@@ -2,16 +2,90 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon2.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bukid Resto Cafe</title>
-    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin />
-    <link rel="preload" as="font" type="font/woff2"
-          href="https://db.onlinewebfonts.com/t/a64ff11d2c24584c767f6257e880dc65.woff2"
-          crossorigin="anonymous" />
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Bukid Resto Cafe | Mountain-View Restaurant & Cafe in Barili, Cebu</title>
+    <meta
+      name="description"
+      content="Fresh Filipino favorites, signature coffee, and sunset views in Barili, Cebu. Perfect for family days, dates, birthdays, and events. Reserve your table online."
+    />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
+    <meta name="theme-color" content="#2d2d2d" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Hero poster is the largest paint: fetch it before the JS bundle. -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://res.cloudinary.com/dhxi75eld/video/upload/so_0,f_auto,q_auto,w_1280/v1781970485/kling_20260620_VIDEO_Cinematic__6060_0_mptyqg.jpg"
+      imagesrcset="https://res.cloudinary.com/dhxi75eld/video/upload/so_0,f_auto,q_auto,w_720/v1781970485/kling_20260620_VIDEO_Cinematic__6060_0_mptyqg.jpg 720w, https://res.cloudinary.com/dhxi75eld/video/upload/so_0,f_auto,q_auto,w_1280/v1781970485/kling_20260620_VIDEO_Cinematic__6060_0_mptyqg.jpg 1280w, https://res.cloudinary.com/dhxi75eld/video/upload/so_0,f_auto,q_auto,w_1920/v1781970485/kling_20260620_VIDEO_Cinematic__6060_0_mptyqg.jpg 1920w"
+      imagesizes="100vw"
+    />
+
+    <!-- Social sharing (Facebook, Messenger, Viber, X) -->
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:site_name" content="Bukid Resto Cafe" />
+    <meta property="og:locale" content="en_PH" />
+    <meta property="og:title" content="Bukid Resto Cafe | Mountain-View Dining in Barili, Cebu" />
+    <meta
+      property="og:description"
+      content="Fresh food, signature coffee, and unforgettable sunset views. Reserve a table or plan your next celebration with us."
+    />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bukid Resto Cafe at sunset with a rainbow over the garden" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bukid Resto Cafe | Mountain-View Dining in Barili, Cebu" />
+    <meta name="twitter:description" content="Fresh food, signature coffee, and unforgettable sunset views in Cebu." />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.jpg" />
+
+    <!-- Restaurant structured data for Google. Keep in sync with src/data/business.ts.
+         Add "telephone", "streetAddress", "sameAs" and "aggregateRating" once the real values are known. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Bukid Resto Cafe",
+        "description": "A peaceful mountain-view restaurant and cafe in Barili, Cebu, serving fresh Filipino favorites, signature coffee, and desserts. Ideal for families, dates, and events.",
+        "url": "%VITE_SITE_URL%/",
+        "image": "%VITE_SITE_URL%/og-image.jpg",
+        "logo": "%VITE_SITE_URL%/icon-512.png",
+        "servesCuisine": ["Filipino", "Cafe", "Grill"],
+        "priceRange": "₱₱",
+        "acceptsReservations": true,
+        "hasMap": "https://maps.google.com/?cid=5619858595555731848",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Barili",
+          "addressRegion": "Cebu",
+          "addressCountry": "PH"
+        },
+        "geo": { "@type": "GeoCoordinates", "latitude": 10.1192833, "longitude": 123.4971137 },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "08:00",
+            "closes": "21:00"
+          }
+        ]
+      }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="font-family: sans-serif; padding: 24px; text-align: center">
+        Bukid Resto Cafe: fresh food, coffee, and mountain views in Cebu. Open daily 8:00 AM to 9:00 PM.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,33 +1,32 @@
-import {
-  Building2,
-  CalendarHeart,
-  Camera,
-  ChefHat,
-  Coffee,
-  Crown,
-  Heart,
-  History,
-  Leaf,
-  MapPin,
-  Mountain,
-  MountainSnow,
-  PartyPopper,
-  PhoneCall,
-  Salad,
-  Star,
-  Sunset,
-  Users,
-  UtensilsCrossed,
-  Wine,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowUpRight, Star, X } from 'lucide-react';
 import {
-  GridSkeleton,
-} from './ui/Skeleton';
+  BriefcaseIcon,
+  CameraIcon,
+  ChampagneIcon,
+  ChefHatIcon,
+  ClockIcon,
+  ClockCounterClockwiseIcon,
+  ConfettiIcon,
+  HeartIcon,
+  MapPinIcon,
+  MountainsIcon,
+  StarIcon as StarFill,
+  UsersThreeIcon,
+} from '@phosphor-icons/react';
+import type { Icon } from '@phosphor-icons/react';
+import AppIcon from './ui/AppIcon';
+import SmartImage from './ui/SmartImage';
+import { dishes } from '../data/menu';
+import { business, getOpenStatus } from '../data/business';
+import { sizedImage } from '../utils/cloudinary';
+import { track } from '../utils/analytics';
+import type { ReserveHandler } from '../App';
 
 type SectionHeadingProps = {
+  id: string;
   eyebrow: string;
   title: string;
   description?: string;
@@ -35,30 +34,23 @@ type SectionHeadingProps = {
 };
 
 type InfoCardProps = {
-  icon: LucideIcon;
+  icon: Icon;
   title: string;
   children: ReactNode;
 };
 
 type SellingPoint = {
-  icon: LucideIcon;
+  icon: Icon;
   title: string;
   description: string;
-};
-
-type Dish = {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  label: string;
-  image?: string;
 };
 
 type GalleryItem = {
-  title: string;
-  icon: LucideIcon;
+  src: string;
   label: string;
-  className: string;
+  title: string;
+  span: string;
+  aspect: string;
 };
 
 type Review = {
@@ -70,171 +62,98 @@ type Review = {
 type EventType = {
   title: string;
   description: string;
-};
-
-type LandingSectionsProps = {
-  loading?: boolean;
+  icon: Icon;
 };
 
 const sectionShell = 'w-full px-6 py-16 md:px-10 lg:py-24';
 const sectionContainer = 'mx-auto max-w-6xl';
 const sectionHeaderCenter = 'mx-auto max-w-3xl text-center';
 const sectionHeaderLeft = 'max-w-3xl';
-const eyebrowText = 'text-xs font-normal uppercase tracking-[0.3em] text-[#8b919d]';
+const eyebrowText = 'text-xs font-normal uppercase tracking-[0.3em] text-[#6b717d]';
 const headingText = 'mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl';
-const bodyText = 'mt-4 text-base leading-relaxed text-[#5e6470] opacity-80';
+const bodyText = 'mt-4 text-base leading-relaxed text-[#4f5560]';
+const primaryButton =
+  'inline-flex items-center justify-center gap-2 rounded-full bg-[rgba(30,50,90,0.9)] px-6 py-3 text-sm font-normal text-white transition hover:bg-[rgba(30,50,90,1)] focus:outline-none focus:ring-4 focus:ring-[rgba(30,50,90,0.14)]';
 
 const sellingPoints: SellingPoint[] = [
   {
-    icon: ChefHat,
+    icon: ChefHatIcon,
     title: 'Fresh & Delicious Food',
     description: 'Prepared with quality ingredients and made for sharing with the people you love.',
   },
   {
-    icon: MountainSnow,
+    icon: MountainsIcon,
     title: 'Scenic Mountain View',
     description: 'Perfect for relaxation, quiet conversations, and photography with a natural backdrop.',
   },
   {
-    icon: Users,
+    icon: UsersThreeIcon,
     title: 'Family-Friendly Atmosphere',
     description: 'A welcoming space for families, couples, friends, and group gatherings.',
   },
   {
-    icon: Camera,
+    icon: CameraIcon,
     title: 'Instagram-Worthy Spots',
     description: 'Beautiful corners, open views, and warm lighting for memorable photos.',
   },
 ];
 
-const dishes: Dish[] = [
-  {
-    icon: UtensilsCrossed,
-    label: 'Signature Grill',
-    title: 'Grilled Pork Belly',
-    description: 'Tender, smoky pork belly served with a savory dipping sauce and rice.',
-  },
-  {
-    icon: Salad,
-    label: 'Seafood Feast',
-    title: 'Seafood Platter',
-    description: 'A generous mix of grilled seafood made for sharing.',
-  },
-  {
-    icon: Coffee,
-    label: 'House Brew',
-    title: 'Signature Coffee',
-    description: 'A rich local-inspired coffee blend crafted for slow afternoons.',
-  },
-  {
-    icon: Heart,
-    label: 'Sweet Treats',
-    title: 'Homemade Desserts',
-    description: 'Freshly prepared desserts with a homemade taste.',
-  },
-  {
-    icon: ChefHat,
-    label: 'Cafe Favorite',
-    title: 'Bukid Breakfast Plate',
-    description: 'A hearty breakfast plate with eggs, toast, and seasonal sides.',
-  },
-  {
-    icon: UtensilsCrossed,
-    label: 'Comfort Meal',
-    title: 'Creamy Pasta',
-    description: 'Creamy pasta tossed with savory sauce and fresh herbs.',
-  },
-  {
-    icon: Leaf,
-    label: 'Light Bite',
-    title: 'Garden Salad',
-    description: 'Crisp greens, fresh vegetables, and a bright house dressing.',
-  },
-  {
-    icon: Wine,
-    label: 'Cool Refreshment',
-    title: 'Mountain Fruit Shake',
-    description: 'A chilled fruit shake made with refreshing local flavors.',
-  },
-  {
-    icon: UtensilsCrossed,
-    label: 'Pinoy Favorite',
-    title: 'Lumpia',
-    description: 'Crispy rolled appetizer served with a savory dipping sauce.',
-    image:
-      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986844/725457305_122116616475043826_3490672837484293300_n_pbx1ol.jpg',
-  },
-  {
-    icon: UtensilsCrossed,
-    label: 'Classic Bite',
-    title: 'Burger',
-    description: 'A classic burger with savory fillings and a soft bun.',
-    image:
-      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986703/725518739_122116490505043826_6411777298136620101_n_wzgmer.jpg',
-  },
-  {
-    icon: UtensilsCrossed,
-    label: 'Shareable Combo',
-    title: 'French Fries/Chicken Fingers',
-    description: 'Crispy fries paired with chicken fingers for sharing.',
-    image:
-      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986702/725578823_122116489767043826_2621467015359406155_n_m1pj2u.jpg',
-  },
-  {
-    icon: UtensilsCrossed,
-    label: 'Rice Favorite',
-    title: 'Garlic Fried Rice',
-    description: 'Aromatic fried rice with a savory garlic flavor.',
-    image:
-      'https://res.cloudinary.com/dhxi75eld/image/upload/v1781986212/k-photo-2021-05-garlic-fried-rice-02_ayrxfc.webp',
-  },
-];
+const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}`;
 
+// The exterior is a real photo of the cafe; the rest are STOCK placeholders until real photos are added.
 const galleryItems: GalleryItem[] = [
   {
-    icon: Building2,
+    src: '/images/cafe-exterior.jpg',
     label: 'Cafe Exterior',
-    title: 'A calm entrance surrounded by nature',
-    className: 'from-emerald-100 to-emerald-200',
+    title: 'Bukid Resto Cafe at golden hour, with a rainbow over the garden',
+    span: 'sm:col-span-2 lg:row-span-2',
+    aspect: '4:3',
   },
   {
-    icon: UtensilsCrossed,
+    src: unsplash('1600093463592-8e36ae95ef56'), // STOCK
     label: 'Dining Area',
     title: 'Comfortable dining spaces for every gathering',
-    className: 'from-amber-100 to-amber-200',
+    span: '',
+    aspect: '4:3',
   },
   {
-    icon: Mountain,
+    src: unsplash('1500534314209-a25ddb2bd429'), // STOCK
     label: 'Mountain Views',
     title: 'Wide green views from the cafe',
-    className: 'from-sky-100 to-sky-200',
+    span: '',
+    aspect: '4:3',
   },
   {
-    icon: Sunset,
+    src: unsplash('1500382017468-9049fed747ef'), // STOCK
     label: 'Sunset Moments',
     title: 'Golden-hour views for a memorable visit',
-    className: 'from-orange-100 to-orange-200',
+    span: '',
+    aspect: '4:3',
   },
   {
-    icon: Users,
+    src: unsplash('1528605248644-14dd04022da1'), // STOCK
     label: 'Guests Dining',
     title: 'Shared meals with family and friends',
-    className: 'from-rose-100 to-rose-200',
+    span: '',
+    aspect: '4:3',
   },
   {
-    icon: Camera,
-    label: 'Photo Spots',
-    title: 'Beautiful corners made for photos',
-    className: 'from-violet-100 to-violet-200',
-  },
-  {
-    icon: Coffee,
+    src: unsplash('1495474472287-4d71bcdd2085'), // STOCK
     label: 'Coffee Break',
     title: 'Warm drinks with a peaceful view',
-    className: 'from-lime-100 to-lime-200',
+    span: 'lg:col-span-2',
+    aspect: '2:1',
+  },
+  {
+    src: unsplash('1600565193348-f74bd3c7ccdf'), // STOCK
+    label: 'From Our Kitchen',
+    title: 'Cooked fresh when you order',
+    span: 'lg:col-span-2',
+    aspect: '2:1',
   },
 ];
 
+// TODO: replace with real Google reviews (with the reviewer's permission) and keep them verbatim.
 const reviews: Review[] = [
   {
     quote: 'Amazing food and beautiful scenery. Perfect place for family gatherings.',
@@ -287,30 +206,35 @@ const eventTypes: EventType[] = [
   {
     title: 'Birthdays',
     description: 'Celebrate another year in a relaxed setting with good food and views.',
+    icon: ConfettiIcon,
   },
   {
     title: 'Family reunions',
     description: 'Give everyone room to enjoy long meals, conversations, and photos.',
+    icon: UsersThreeIcon,
   },
   {
     title: 'Corporate outings',
     description: 'Host team lunches, appreciation events, or casual company gatherings.',
+    icon: BriefcaseIcon,
   },
   {
     title: 'Wedding receptions',
     description: 'Plan an intimate celebration surrounded by nature.',
+    icon: ChampagneIcon,
   },
   {
     title: 'Pre-wedding photoshoots',
     description: 'Capture romantic moments with scenic mountain and sunset backdrops.',
+    icon: CameraIcon,
   },
 ];
 
-function SectionHeading({ eyebrow, title, description, align = 'center' }: SectionHeadingProps) {
+function SectionHeading({ id, eyebrow, title, description, align = 'center' }: SectionHeadingProps) {
   return (
     <div className={align === 'center' ? sectionHeaderCenter : sectionHeaderLeft}>
       <p className={eyebrowText}>{eyebrow}</p>
-      <h2 className={headingText}>{title}</h2>
+      <h2 id={id} className={headingText}>{title}</h2>
       {description && <p className={bodyText}>{description}</p>}
     </div>
   );
@@ -326,51 +250,62 @@ function SectionCard({ children, className = '' }: { children: ReactNode; classN
   );
 }
 
-function InfoCard({ icon: Icon, title, children }: InfoCardProps) {
+function InfoCard({ icon, title, children }: InfoCardProps) {
   return (
-    <SectionCard>
-      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
-        <Icon className="h-6 w-6" aria-hidden="true" />
+    <SectionCard className="flex gap-5">
+      <AppIcon icon={icon} size="md" />
+      <div>
+        <h3 className="text-xl font-normal text-[#2d2d2d]">{title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-[#4f5560]">{children}</p>
       </div>
-      <h3 className="text-xl font-normal text-[#2d2d2d]">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-[#5e6470] opacity-80">{children}</p>
     </SectionCard>
   );
 }
 
-function PlaceholderImage({
-  icon: Icon,
-  label,
-  className,
-}: {
-  icon: LucideIcon;
-  label: string;
-  className: string;
-}) {
+type LandingSectionsProps = {
+  onReserve: ReserveHandler;
+};
+
+export default function LandingSections({ onReserve }: LandingSectionsProps) {
   return (
-    <div className={`relative h-48 overflow-hidden rounded-[1.5rem] bg-gradient-to-br ${className}`}>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-16 w-16 text-white/70" aria-hidden="true" />
-      </div>
-      <div className="absolute inset-x-0 bottom-0 p-4">
-        <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
-          {label}
-        </span>
-      </div>
-    </div>
+    <>
+      <TrustStrip />
+      <FeaturedDishesSection onReserve={onReserve} />
+      <WhyVisitSection />
+      <GallerySection />
+      <ReviewsSection />
+      <EventsReservationsSection onReserve={onReserve} />
+      <AboutSection />
+    </>
   );
 }
 
-export default function LandingSections({ loading }: LandingSectionsProps) {
+function TrustStrip() {
+  const status = getOpenStatus();
+  const rating = business.googleRating;
+  const items: { icon: Icon; title: string; detail: string }[] = [
+    ...(rating
+      ? [{ icon: StarFill, title: `${rating.rating.toFixed(1)} on Google`, detail: `${rating.count} reviews` }]
+      : []),
+    { icon: ClockIcon, title: status.label, detail: business.hoursLabel },
+    { icon: MountainsIcon, title: 'Mountain & sunset views', detail: 'Bring your camera' },
+    { icon: UsersThreeIcon, title: `Groups up to ${business.maxGuests}`, detail: 'Birthdays, reunions, outings' },
+  ];
+
   return (
-    <>
-      {loading ? <AboutSkeleton /> : <AboutSection />}
-      {loading ? <WhyVisitSkeleton /> : <WhyVisitSection />}
-      {loading ? <FeaturedDishesSkeleton /> : <FeaturedDishesSection />}
-      {loading ? <GallerySkeleton /> : <GallerySection />}
-      {loading ? <ReviewsSkeleton /> : <ReviewsSection />}
-      {loading ? <EventsSkeleton /> : <EventsReservationsSection />}
-    </>
+    <section aria-label="Quick facts" className="w-full px-6 pt-6 md:px-10">
+      <ul className={`${sectionContainer} grid grid-cols-1 gap-3 sm:grid-cols-3 ${rating ? 'lg:grid-cols-4' : ''}`}>
+        {items.map((item) => (
+          <li key={item.title} className="flex items-center gap-3 rounded-2xl bg-white/80 p-3 ring-1 ring-black/5">
+            <AppIcon icon={item.icon} size="sm" />
+            <div className="min-w-0">
+              <p className="truncate text-sm text-[#2d2d2d]">{item.title}</p>
+              <p className="truncate text-xs text-[#6b717d]">{item.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -379,74 +314,22 @@ function AboutSection() {
     <section id="about" className={sectionShell} aria-labelledby="about-title">
       <div className={sectionContainer}>
         <SectionHeading
+          id="about-title"
           eyebrow="About Bukid Resto Cafe"
-          title="A peaceful dining escape in the heart of nature"
-          description="Nestled in the heart of nature, Bukid Resto Cafe offers a peaceful dining experience surrounded by scenic landscapes. Whether you are looking for a family gathering, romantic dinner, or a relaxing weekend getaway, our cafe provides great food and unforgettable views."
+          title="Made for slowing down"
+          description="Bukid Resto Cafe began with a simple idea: create a place where people can slow down, share good meals, and enjoy the beauty of the surrounding landscape."
         />
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-          <SectionCard className="flex flex-col justify-between">
-            <div>
-              <p className={eyebrowText}>Our story</p>
-              <p className="mt-4 text-lg leading-relaxed text-[#2d2d2d]">
-                Bukid Resto Cafe began with a simple idea: create a place where people can slow down, share good meals, and enjoy the beauty of the surrounding landscape.
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-[#5e6470] opacity-80">
-                From quiet morning coffee to sunset dinners with family, the cafe is designed for moments that feel calm, personal, and worth remembering.
-              </p>
-            </div>
-          </SectionCard>
-
-          <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-1">
-            <InfoCard icon={History} title="Cafe history">
-              Inspired by the natural beauty of the area, the cafe grew into a welcoming destination for locals, travelers, and guests celebrating meaningful occasions.
-            </InfoCard>
-            <InfoCard icon={Heart} title="Mission">
-              To serve fresh food, warm hospitality, and peaceful views that help every guest feel relaxed, welcomed, and cared for.
-            </InfoCard>
-            <InfoCard icon={MapPin} title="What makes it unique">
-              A blend of scenic mountain views, home-style dishes, cozy dining spaces, and photo-ready corners in one relaxing escape.
-            </InfoCard>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function AboutSkeleton() {
-  return (
-    <section id="about" className={sectionShell} aria-labelledby="about-title">
-      <div className={sectionContainer}>
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="h-3 w-32 mx-auto rounded-md bg-white/50 animate-pulse" />
-          <div className="mt-3 h-10 w-3/4 mx-auto rounded-2xl bg-white/50 animate-pulse" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-4/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-          </div>
-        </div>
-        <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-          <div className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
-            <div className="space-y-3">
-              <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
-            </div>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-1">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8">
-                <div className="flex flex-col gap-3">
-                  <div className="h-3 w-24 rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <InfoCard icon={ClockCounterClockwiseIcon} title="Cafe history">
+            Inspired by the natural beauty of the area, the cafe grew into a welcoming destination for locals, travelers, and guests celebrating meaningful occasions.
+          </InfoCard>
+          <InfoCard icon={HeartIcon} title="Mission">
+            To serve fresh food, warm hospitality, and peaceful views that help every guest feel relaxed, welcomed, and cared for.
+          </InfoCard>
+          <InfoCard icon={MapPinIcon} title="What makes it unique">
+            A blend of scenic mountain views, home-style dishes, cozy dining spaces, and photo-ready corners in one relaxing escape.
+          </InfoCard>
         </div>
       </div>
     </section>
@@ -458,6 +341,7 @@ function WhyVisitSection() {
     <section id="why-visit" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="why-visit-title">
       <div className={sectionContainer}>
         <SectionHeading
+          id="why-visit-title"
           eyebrow="Why Visit"
           title="Reasons to spend the day at Bukid Resto Cafe"
           description="Every corner is made for relaxation, good food, and memories with the people who matter most."
@@ -466,11 +350,9 @@ function WhyVisitSection() {
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {sellingPoints.map((point) => (
             <SectionCard key={point.title} className="flex flex-col">
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-white text-emerald-700 shadow-sm ring-1 ring-black/5">
-                <point.icon className="h-6 w-6" aria-hidden="true" />
-              </div>
+              <AppIcon icon={point.icon} className="mb-5" />
               <h3 className="text-xl font-normal text-[#2d2d2d]">{point.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#5e6470] opacity-80">{point.description}</p>
+              <p className="mt-3 text-sm leading-relaxed text-[#4f5560]">{point.description}</p>
             </SectionCard>
           ))}
         </div>
@@ -479,40 +361,30 @@ function WhyVisitSection() {
   );
 }
 
-function WhyVisitSkeleton() {
-  return (
-    <section id="why-visit" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="why-visit-title">
-      <div className={sectionContainer}>
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="h-3 w-20 mx-auto rounded-md bg-white/50 animate-pulse" />
-          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-          </div>
-        </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur flex flex-col">
-              <div className="mb-5 h-12 w-12 rounded-full bg-white/70 animate-pulse" />
-              <div className="h-5 w-4/5 rounded-md bg-white/60 animate-pulse" />
-              <div className="mt-3 space-y-2">
-                <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+function FeaturedDishesSection({ onReserve }: { onReserve: ReserveHandler }) {
+  const sectionRef = useRef<HTMLElement | null>(null);
 
-function FeaturedDishesSection() {
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          track('menu_view');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="featured-dishes" className={sectionShell} aria-labelledby="featured-dishes-title">
+    <section ref={sectionRef} id="featured-dishes" className={sectionShell} aria-labelledby="featured-dishes-title">
       <div className={sectionContainer}>
         <SectionHeading
+          id="featured-dishes-title"
           eyebrow="Featured Dishes"
           title="Best-selling food made for sharing"
           description="From grilled favorites to coffee and desserts, each dish is prepared to complement the cafe's relaxed mountain setting."
@@ -520,155 +392,178 @@ function FeaturedDishesSection() {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {dishes.map((dish) => (
-            <div
+            <article
               key={dish.title}
-              className="overflow-hidden rounded-[2rem] bg-white/80 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur"
+              className="group overflow-hidden rounded-[2rem] bg-white/80 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur"
             >
-              {dish.image ? (
-                <img src={dish.image} alt={dish.title} className="h-48 w-full object-cover" loading="lazy" />
-              ) : (
-                <PlaceholderImage icon={dish.icon} label={dish.label} className={dish.title.includes('Coffee') ? 'from-amber-100 to-amber-200' : dish.title.includes('Salad') ? 'from-lime-100 to-lime-200' : dish.title.includes('Shake') ? 'from-sky-100 to-sky-200' : dish.title.includes('Desserts') ? 'from-rose-100 to-rose-200' : 'from-orange-100 to-orange-200'} />
-              )}
-              <div className="p-5">
-                <h3 className="text-xl font-normal text-[#2d2d2d]">{dish.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#5e6470] opacity-80">{dish.description}</p>
+              <div className="relative">
+                <SmartImage
+                  src={dish.image}
+                  alt={`${dish.title} at Bukid Resto Cafe`}
+                  imgClassName="transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-4">
+                  <span className="rounded-full bg-white/85 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
+                    {dish.label}
+                  </span>
+                  {dish.bestSeller && (
+                    <span className="rounded-full bg-[#f5a300] px-3 py-1 text-xs font-medium text-white shadow-sm">
+                      Best seller
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+              <div className="p-5">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className="text-xl font-normal text-[#2d2d2d]">{dish.title}</h3>
+                  {dish.price != null && (
+                    <span className="shrink-0 text-base text-emerald-700">₱{dish.price.toLocaleString('en-PH')}</span>
+                  )}
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-[#4f5560]">{dish.description}</p>
+              </div>
+            </article>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
 
-function FeaturedDishesSkeleton() {
-  return (
-    <section id="featured-dishes" className={sectionShell} aria-labelledby="featured-dishes-title">
-      <div className={sectionContainer}>
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="h-3 w-28 mx-auto rounded-md bg-white/50 animate-pulse" />
-          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-          </div>
+        <div className="mt-10 flex flex-col items-center gap-3 text-center">
+          <p className="text-sm text-[#4f5560]">Hungry already? Save a table with the best view.</p>
+          <button type="button" onClick={() => onReserve('dishes_cta')} className={primaryButton}>
+            Reserve a Table
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </button>
         </div>
-        <GridSkeleton count={8} className="mt-10 gap-6 sm:grid-cols-2 lg:grid-cols-4" />
       </div>
     </section>
   );
 }
 
 function GallerySection() {
+  const [active, setActive] = useState<GalleryItem | null>(null);
+
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActive(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [active]);
+
   return (
     <section id="gallery" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="gallery-title">
       <div className={sectionContainer}>
         <SectionHeading
+          id="gallery-title"
           eyebrow="Gallery"
           title="A glimpse of the Bukid Resto Cafe experience"
           description="Explore the spaces, views, meals, and moments that make every visit feel special."
         />
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-flow-dense auto-rows-[200px] gap-4 sm:grid-cols-2 lg:auto-rows-[190px] lg:grid-cols-4">
           {galleryItems.map((item) => (
-            <div
-              key={item.title}
-              className={`group overflow-hidden rounded-[2rem] bg-gradient-to-br ${item.className} p-3 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur`}
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => setActive(item)}
+              className={`group relative overflow-hidden rounded-[1.75rem] shadow-lg shadow-black/5 ring-1 ring-black/5 focus:outline-none focus:ring-4 focus:ring-emerald-600/30 ${item.span}`}
+              aria-label={`View photo: ${item.title}`}
             >
-              <div className="relative h-48 overflow-hidden rounded-[1.5rem] bg-white/30">
-                <item.icon className="absolute right-4 top-4 h-10 w-10 text-white/70" aria-hidden="true" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <item.icon className="h-20 w-20 text-white/60" aria-hidden="true" />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <span className="rounded-full bg-white/75 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
-                    {item.label}
-                  </span>
-                </div>
-              </div>
-              <p className="mt-4 px-1 text-sm leading-relaxed text-[#5e6470] opacity-80">{item.title}</p>
-            </div>
+              <SmartImage
+                src={item.src}
+                alt={item.title}
+                aspect={item.aspect}
+                className="h-full w-full"
+                sizes={item.span ? '(min-width: 1024px) 50vw, 100vw' : '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw'}
+                imgClassName="transition-transform duration-500 group-hover:scale-105"
+              />
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 rounded-full bg-white/85 px-3 py-1 text-xs font-normal text-[#2d2d2d] backdrop-blur">
+                {item.label}
+              </span>
+            </button>
           ))}
         </div>
       </div>
-    </section>
-  );
-}
 
-function GallerySkeleton() {
-  return (
-    <section id="gallery" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="gallery-title">
-      <div className={sectionContainer}>
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="h-3 w-20 mx-auto rounded-md bg-white/50 animate-pulse" />
-          <div className="mt-3 h-10 w-4/5 mx-auto rounded-2xl bg-white/50 animate-pulse" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-          </div>
-        </div>
-        <GridSkeleton count={7} className="mt-10 gap-4 sm:grid-cols-2 lg:grid-cols-4" />
-      </div>
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActive(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={active.title}
+          >
+            <motion.figure
+              initial={{ scale: 0.96 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.96 }}
+              className="relative max-h-full max-w-5xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={sizedImage(active.src, { width: 1600, aspect: active.aspect === '2:1' ? '2:1' : '3:2' })}
+                alt={active.title}
+                className="max-h-[80vh] w-auto rounded-2xl object-contain"
+              />
+              <figcaption className="mt-3 text-center text-sm text-white/85">{active.title}</figcaption>
+              <button
+                type="button"
+                onClick={() => setActive(null)}
+                aria-label="Close photo"
+                autoFocus
+                className="absolute -top-3 -right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#2d2d2d] shadow-lg"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </motion.figure>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
 function ReviewsSection() {
+  const rating = business.googleRating;
+
   return (
     <section id="reviews" className={sectionShell} aria-labelledby="reviews-title">
       <div className={sectionContainer}>
         <SectionHeading
+          id="reviews-title"
           eyebrow="Customer Reviews"
           title="What our guests are saying"
           description="Real experiences from visitors who came for the scenery and stayed for the moments."
         />
 
-        <div className="mt-12 space-y-4">
-          <MarqueeRow reviews={reviews} direction="left" />
-          <MarqueeRow reviews={reviews} direction="right" />
-        </div>
+        {rating && (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <p className="flex items-center gap-2 text-lg text-[#2d2d2d]">
+              <Star className="h-5 w-5 fill-[#f5a300] text-[#f5a300]" aria-hidden="true" />
+              {rating.rating.toFixed(1)} average from {rating.count} Google reviews
+            </p>
+            {business.googleReviewsUrl && (
+              <a
+                href={business.googleReviewsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-emerald-700 underline-offset-4 hover:underline"
+              >
+                See all reviews on Google
+              </a>
+            )}
+          </div>
+        )}
       </div>
-    </section>
-  );
-}
 
-function ReviewsSkeleton() {
-  return (
-    <section id="reviews" className={sectionShell} aria-labelledby="reviews-title">
-      <div className={sectionContainer}>
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="h-3 w-28 mx-auto rounded-md bg-white/50 animate-pulse" />
-          <div className="mt-3 h-10 w-3/4 mx-auto rounded-2xl bg-white/50 animate-pulse" />
-          <div className="mt-4 space-y-2">
-            <div className="h-4 w-full mx-auto rounded-md bg-white/50 animate-pulse" />
-            <div className="h-4 w-5/6 mx-auto rounded-md bg-white/50 animate-pulse" />
-          </div>
-        </div>
-        <div className="mt-12 space-y-4">
-          <div className="flex gap-6 overflow-hidden">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
-                <div className="flex items-center gap-1 mb-4">
-                  {[0, 1, 2, 3, 4].map((star) => (
-                    <div key={star} className="h-4 w-4 rounded-sm bg-white/70 animate-pulse" />
-                  ))}
-                </div>
-                <div className="space-y-2 mb-4">
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                  <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-white/70 animate-pulse" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-24 rounded-md bg-white/60 animate-pulse" />
-                    <div className="h-3 w-16 rounded-md bg-white/40 animate-pulse" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mt-12 space-y-4">
+        <MarqueeRow reviews={reviews} direction="left" />
+        <MarqueeRow reviews={[...reviews].reverse()} direction="right" />
       </div>
     </section>
   );
@@ -678,162 +573,103 @@ function MarqueeRow({ reviews, direction }: { reviews: Review[]; direction: 'lef
   const duplicatedReviews = [...reviews, ...reviews];
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
       <motion.div
-        className="flex gap-6"
+        className="flex w-max gap-6 motion-reduce:!transform-none"
         animate={{
           x: direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'],
         }}
         transition={{
           x: {
-            duration: 30,
+            duration: 45,
             ease: 'linear',
             repeat: Infinity,
           },
         }}
       >
         {duplicatedReviews.map((review, i) => (
-          <TestimonialCard key={`${review.author}-${i}`} review={review} />
+          <TestimonialCard key={`${review.author}-${i}`} review={review} hidden={i >= reviews.length} />
         ))}
       </motion.div>
     </div>
   );
 }
 
-function TestimonialCard({ review }: { review: Review }) {
+function TestimonialCard({ review, hidden }: { review: Review; hidden: boolean }) {
   return (
-    <div className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur">
-      <div className="flex items-center gap-1 mb-4 text-[#d99a22]" aria-label="Five star review">
+    <figure
+      aria-hidden={hidden || undefined}
+      className="flex-shrink-0 w-80 rounded-3xl bg-white/90 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur"
+    >
+      <div className="flex items-center gap-1 mb-4 text-[#f5a300]" role="img" aria-label="Rated 5 out of 5">
         {[0, 1, 2, 3, 4].map((star) => (
           <Star key={star} className="h-4 w-4 fill-current" aria-hidden="true" />
         ))}
       </div>
-      <p className="text-base leading-relaxed text-[#2d2d2d] mb-4">
-        &quot;{review.quote}&quot;
-      </p>
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center">
-          <span className="text-sm font-medium text-emerald-800">
-            {review.author.charAt(0)}
-          </span>
-        </div>
-        <div>
-          <p className="font-normal text-[#2d2d2d] text-sm">{review.author}</p>
-          <p className="text-[#8b919d] text-xs">{review.role}</p>
-        </div>
-      </div>
-    </div>
+      <blockquote className="text-base leading-relaxed text-[#2d2d2d] mb-4">&quot;{review.quote}&quot;</blockquote>
+      <figcaption className="flex items-center gap-3">
+        <span className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center text-sm font-medium text-emerald-800" aria-hidden="true">
+          {review.author.charAt(0)}
+        </span>
+        <span>
+          <span className="block font-normal text-[#2d2d2d] text-sm">{review.author}</span>
+          <span className="block text-[#6b717d] text-xs">{review.role}</span>
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 
-function EventsReservationsSection() {
+function EventsReservationsSection({ onReserve }: { onReserve: ReserveHandler }) {
   return (
     <section id="events" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="events-title">
       <div className={sectionContainer}>
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
-            <p className={eyebrowText}>Events &amp; Reservations</p>
-            <h2 id="events-title" className="mt-3 text-3xl font-normal leading-tight text-[#2d2d2d] sm:text-4xl">
-              Planning a special event?
-            </h2>
-            <p className={bodyText}>
-              Contact us for reservations and venue inquiries. We can help you prepare for birthdays, reunions, corporate outings, wedding receptions, and pre-wedding photoshoots.
-            </p>
+            <SectionHeading
+              id="events-title"
+              align="left"
+              eyebrow="Events & Reservations"
+              title="Planning a special event?"
+              description={`We host groups of up to ${business.maxGuests} guests for birthdays, reunions, corporate outings, wedding receptions, and pre-wedding photoshoots. Tap an occasion to start your inquiry.`}
+            />
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {eventTypes.map((event) => (
-                <div
+              {eventTypes.map((event, index) => (
+                <button
                   key={event.title}
-                  className="rounded-[1.5rem] bg-white/70 p-5 ring-1 ring-black/5 backdrop-blur"
+                  type="button"
+                  onClick={() => onReserve('event_card', event.title)}
+                  className={`${index === eventTypes.length - 1 && eventTypes.length % 2 === 1 ? 'sm:col-span-2' : ''} group flex items-start gap-4 rounded-[1.5rem] bg-white/70 p-5 text-left ring-1 ring-black/5 backdrop-blur transition hover:bg-white hover:shadow-lg hover:shadow-black/5 focus:outline-none focus:ring-4 focus:ring-emerald-600/20`}
                 >
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
-                    {getEventIcon(event.title)}
-                  </div>
-                  <h3 className="text-lg font-normal text-[#2d2d2d]">{event.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#5e6470] opacity-80">{event.description}</p>
-                </div>
+                  <AppIcon icon={event.icon} size="md" />
+                  <span>
+                    <span className="flex items-center gap-1 text-lg font-normal text-[#2d2d2d]">
+                      {event.title}
+                      <ArrowUpRight className="h-4 w-4 opacity-0 transition group-hover:opacity-60" aria-hidden="true" />
+                    </span>
+                    <span className="mt-1 block text-sm leading-relaxed text-[#4f5560]">{event.description}</span>
+                  </span>
+                </button>
               ))}
             </div>
           </div>
 
           <SectionCard className="flex flex-col justify-center text-center">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-              <PhoneCall className="h-8 w-8" aria-hidden="true" />
-            </div>
+            <AppIcon icon={StarFill} className="mx-auto mb-6" />
             <h3 className="text-2xl font-normal leading-tight text-[#2d2d2d]">Reserve your table or venue</h3>
-            <p className="mt-4 text-base leading-relaxed text-[#5e6470] opacity-80">
-              Let us know your event details, preferred date, number of guests, and any special requests.
+            <p className="mt-4 text-base leading-relaxed text-[#4f5560]">
+              Share your preferred date, number of guests, and any special requests. We&apos;ll reply with availability and a free quote for events.
             </p>
-            <a
-              href="#contact"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-[rgba(30,50,90,0.9)] px-6 py-3 text-sm font-normal text-white transition hover:bg-[rgba(30,50,90,1)] focus:outline-none focus:ring-4 focus:ring-[rgba(30,50,90,0.14)]"
-            >
-              Contact us for reservations
-            </a>
-            <p className="mt-4 text-xs leading-relaxed text-[#8b919d]">
-              Use the reservation form to share your event date, guest count, and venue requests.
+            <button type="button" onClick={() => onReserve('events_cta')} className={`${primaryButton} mt-6`}>
+              Request a reservation
+            </button>
+            <p className="mt-4 text-xs leading-relaxed text-[#6b717d]">
+              Takes about a minute · No payment needed to inquire
             </p>
           </SectionCard>
         </div>
       </div>
     </section>
   );
-}
-
-function EventsSkeleton() {
-  return (
-    <section id="events" className="w-full bg-[#eaf0e8] px-6 py-16 md:px-10 lg:py-24" aria-labelledby="events-title">
-      <div className={sectionContainer}>
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div>
-            <div className="h-3 w-32 rounded-md bg-white/50 animate-pulse" />
-            <div className="mt-3 h-10 w-4/5 rounded-2xl bg-white/50 animate-pulse" />
-            <div className="mt-4 space-y-2">
-              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <div key={i} className="rounded-[1.5rem] bg-white/70 p-5 ring-1 ring-black/5 backdrop-blur">
-                  <div className="mb-4 h-11 w-11 rounded-full bg-white/70 animate-pulse" />
-                  <div className="h-5 w-4/5 rounded-md bg-white/60 animate-pulse" />
-                  <div className="mt-2 space-y-2">
-                    <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-                    <div className="h-4 w-3/4 rounded-md bg-white/50 animate-pulse" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-[2rem] bg-white/80 p-6 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur sm:p-8 flex flex-col justify-center text-center">
-            <div className="mx-auto mb-6 h-16 w-16 rounded-full bg-emerald-100 animate-pulse" />
-            <div className="h-7 w-4/5 mx-auto rounded-2xl bg-white/60 animate-pulse" />
-            <div className="mt-4 space-y-2 mx-auto max-w-xs">
-              <div className="h-4 w-full rounded-md bg-white/50 animate-pulse" />
-              <div className="h-4 w-5/6 rounded-md bg-white/50 animate-pulse" />
-            </div>
-            <div className="mt-6 h-10 w-40 mx-auto rounded-full bg-[rgba(30,50,90,0.4)] animate-pulse" />
-            <div className="mt-4 h-3 w-48 mx-auto rounded-md bg-white/30 animate-pulse" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function getEventIcon(title: string) {
-  switch (title) {
-    case 'Birthdays':
-      return <PartyPopper className="h-6 w-6" aria-hidden="true" />;
-    case 'Family reunions':
-      return <Users className="h-6 w-6" aria-hidden="true" />;
-    case 'Corporate outings':
-      return <CalendarHeart className="h-6 w-6" aria-hidden="true" />;
-    case 'Wedding receptions':
-      return <Crown className="h-6 w-6" aria-hidden="true" />;
-    case 'Pre-wedding photoshoots':
-      return <Camera className="h-6 w-6" aria-hidden="true" />;
-    default:
-      return <PhoneCall className="h-6 w-6" aria-hidden="true" />;
-  }
 }

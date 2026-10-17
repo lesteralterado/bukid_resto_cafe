@@ -7,10 +7,11 @@ type NavbarProps = {
 };
 
 const NAV_LINKS = [
-  { id: 'about', label: 'About' },
-  { id: 'why-visit', label: 'Why Visit', hasChevron: true },
-  { id: 'featured-dishes', label: 'Featured Dishes' },
+  { id: 'featured-dishes', label: 'Menu' },
+  { id: 'gallery', label: 'Gallery' },
+  { id: 'reviews', label: 'Reviews' },
   { id: 'events', label: 'Events', hasChevron: true },
+  { id: 'visit', label: 'Visit Us' },
 ];
 
 export default function Navbar({ onReserveTable }: NavbarProps) {
@@ -31,6 +32,8 @@ export default function Navbar({ onReserveTable }: NavbarProps) {
     [scrollTo]
   );
 
+  const wasOpenRef = useRef(false);
+
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -39,8 +42,10 @@ export default function Navbar({ onReserveTable }: NavbarProps) {
     } else {
       document.body.style.overflow = '';
       hamburgerRef.current?.setAttribute('aria-expanded', 'false');
-      hamburgerRef.current?.focus();
+      // Only return focus after the menu was actually open, not on first render.
+      if (wasOpenRef.current) hamburgerRef.current?.focus();
     }
+    wasOpenRef.current = isMobileMenuOpen;
     return () => {
       document.body.style.overflow = '';
     };
@@ -58,9 +63,13 @@ export default function Navbar({ onReserveTable }: NavbarProps) {
 
   return (
     <nav className="flex items-center justify-between py-6 px-6 md:px-10 w-full relative z-10">
-      <div className="flex-1 hidden md:block" />
+      <div className="flex-1 hidden md:block">
+        <a href="#top" className="tracking-tighter text-xl text-white" aria-label="Bukid Resto Cafe, back to top">
+          Bukid <span className="text-white/70">Resto Cafe</span>
+        </a>
+      </div>
 
-      <ul className="hidden md:flex items-center gap-8 text-white font-normal text-sm">
+      <ul className="hidden md:flex items-center gap-6 lg:gap-8 text-white font-normal text-sm">
         {NAV_LINKS.map((link) => (
           <li key={link.id}>
             <a
@@ -102,13 +111,14 @@ export default function Navbar({ onReserveTable }: NavbarProps) {
         </motion.button>
 
         <motion.button
+          type="button"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={onReserveTable}
-          className="flex items-center bg-[rgba(30,50,90,0.8)] text-white rounded-full pl-2 pr-4 md:pr-6 py-1.5 md:py-2 gap-2 md:gap-3 hover:bg-[rgba(30,50,90,1)] transition-colors group"
+          className="hidden sm:flex items-center bg-[rgba(30,50,90,0.8)] text-white rounded-full pl-2 pr-4 md:pr-6 py-1.5 md:py-2 gap-2 md:gap-3 hover:bg-[rgba(30,50,90,1)] transition-colors group"
         >
           <div className="bg-white/20 p-1 md:p-1.5 rounded-full flex items-center justify-center">
-            <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
+            <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white" aria-hidden="true" />
           </div>
           <span className="text-xs md:text-sm font-normal">Reserve a Table</span>
         </motion.button>
