@@ -37,15 +37,15 @@ export const business = {
 
   // 24h "HH:MM" in Asia/Manila time. Index 0 = Sunday.
   hours: [
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
-    { open: '08:00', close: '21:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
+    { open: '10:00', close: '22:00' },
   ] as DayHours[],
-  hoursLabel: 'Daily, 8:00 AM – 9:00 PM',
+  hoursLabel: 'Daily, 10:00 AM – 10:00 PM',
 };
 
 function manilaNow() {

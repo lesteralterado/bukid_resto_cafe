@@ -99,8 +99,9 @@ const sellingPoints: SellingPoint[] = [
 ];
 
 const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}`;
+const cloudinary = 'https://res.cloudinary.com/dhxi75eld/image/upload';
 
-// The exterior is a real photo of the cafe; the rest are STOCK placeholders until real photos are added.
+// Real Bukid Resto Cafe photos, plus two STOCK placeholders (sunset, coffee) until real ones are added.
 const galleryItems: GalleryItem[] = [
   {
     src: '/images/cafe-exterior.jpg',
@@ -110,16 +111,30 @@ const galleryItems: GalleryItem[] = [
     aspect: '4:3',
   },
   {
-    src: unsplash('1600093463592-8e36ae95ef56'), // STOCK
-    label: 'Dining Area',
-    title: 'Comfortable dining spaces for every gathering',
+    src: `${cloudinary}/v1781986703/727277141_122116941993043826_164577610010474343_n_cfcqlm.jpg`,
+    label: 'Guests Dining',
+    title: 'Shared meals with family and friends in the garden',
     span: '',
     aspect: '4:3',
   },
   {
-    src: unsplash('1500534314209-a25ddb2bd429'), // STOCK
-    label: 'Mountain Views',
-    title: 'Wide green views from the cafe',
+    src: `${cloudinary}/v1781986703/726576194_1695073944976241_8577567113806243605_n_acjbwv.jpg`,
+    label: 'View Deck',
+    title: 'Open-air seating with green hills and sea views',
+    span: '',
+    aspect: '4:3',
+  },
+  {
+    src: `${cloudinary}/v1781986287/filipino-chicken-inasal-579_uctfaw.webp`,
+    label: 'Grill Favorites',
+    title: 'Grilled favorites served with rice',
+    span: '',
+    aspect: '4:3',
+  },
+  {
+    src: `${cloudinary}/v1781986287/2021-06-21_atk-2597_ehz71m.webp`,
+    label: 'Sweet Treats',
+    title: 'Cool, colorful desserts for warm afternoons',
     span: '',
     aspect: '4:3',
   },
@@ -127,27 +142,13 @@ const galleryItems: GalleryItem[] = [
     src: unsplash('1500382017468-9049fed747ef'), // STOCK
     label: 'Sunset Moments',
     title: 'Golden-hour views for a memorable visit',
-    span: '',
-    aspect: '4:3',
-  },
-  {
-    src: unsplash('1528605248644-14dd04022da1'), // STOCK
-    label: 'Guests Dining',
-    title: 'Shared meals with family and friends',
-    span: '',
-    aspect: '4:3',
+    span: 'lg:col-span-2',
+    aspect: '2:1',
   },
   {
     src: unsplash('1495474472287-4d71bcdd2085'), // STOCK
     label: 'Coffee Break',
     title: 'Warm drinks with a peaceful view',
-    span: 'lg:col-span-2',
-    aspect: '2:1',
-  },
-  {
-    src: unsplash('1600565193348-f74bd3c7ccdf'), // STOCK
-    label: 'From Our Kitchen',
-    title: 'Cooked fresh when you order',
     span: 'lg:col-span-2',
     aspect: '2:1',
   },
@@ -561,7 +562,7 @@ function ReviewsSection() {
         )}
       </div>
 
-      <div className="mt-12 space-y-4">
+      <div className="mx-auto mt-12 max-w-6xl space-y-4 sm:px-6 md:px-10">
         <MarqueeRow reviews={reviews} direction="left" />
         <MarqueeRow reviews={[...reviews].reverse()} direction="right" />
       </div>

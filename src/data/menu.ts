@@ -1,6 +1,6 @@
 // Featured dishes. `price` (₱) and `bestSeller` are shown only when set.
-// STOCK photos are free Unsplash placeholders; replace them with real photos of your dishes,
-// because guests trust (and order) what they can actually see on the table.
+// Photos are real Bukid Resto Cafe photos hosted on Cloudinary. Guests trust (and order)
+// what they can actually see on the table, so keep each photo matched to its dish.
 
 export type Dish = {
   title: string;
@@ -11,59 +11,57 @@ export type Dish = {
   bestSeller?: boolean;
 };
 
-const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}`;
-
 export const dishes: Dish[] = [
   {
     label: 'Signature Grill',
     title: 'Grilled Pork Belly',
     description: 'Tender, smoky pork belly served with a savory dipping sauce and rice.',
-    image: unsplash('1555939594-58d7cb561ad1'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/714363738_122115168621043826_1941352113389072552_n_kiewlo.jpg',
     bestSeller: true, // TODO: confirm best sellers
   },
   {
     label: 'Seafood Feast',
     title: 'Seafood Platter',
     description: 'A generous mix of grilled seafood made for sharing.',
-    image: unsplash('1559737558-2f5a35f4523b'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/721881103_122116111761043826_2008001494691661035_n_lhgr6i.jpg',
     bestSeller: true,
   },
   {
     label: 'House Brew',
     title: 'Signature Coffee',
     description: 'A rich local-inspired coffee blend crafted for slow afternoons.',
-    image: unsplash('1509042239860-f550ce710b93'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/722754957_122116618275043826_3405707230625711570_n_jazmko.jpg',
     bestSeller: true,
   },
   {
     label: 'Sweet Treats',
     title: 'Homemade Desserts',
     description: 'Freshly prepared desserts with a homemade taste.',
-    image: unsplash('1488477181946-6428a0291777'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724124419_122116240557043826_8655294559173541423_n_vnivo9.jpg',
   },
   {
     label: 'Cafe Favorite',
     title: 'Bukid Breakfast Plate',
     description: 'A hearty breakfast plate with eggs, toast, and seasonal sides.',
-    image: unsplash('1533089860892-a7c6f0a88666'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724770276_122116618293043826_4494773150655047075_n_yduh26.jpg',
   },
   {
     label: 'Comfort Meal',
     title: 'Creamy Pasta',
     description: 'Creamy pasta tossed with savory sauce and fresh herbs.',
-    image: unsplash('1608219992759-8d74ed8d76eb'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/724612779_122116618305043826_8041142901930317140_n_rdm3av.jpg',
   },
   {
     label: 'Light Bite',
     title: 'Garden Salad',
     description: 'Crisp greens, fresh vegetables, and a bright house dressing.',
-    image: unsplash('1512621776951-a57141f2eefd'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/722754957_122116618275043826_3405707230625711570_n_jazmko.jpg',
   },
   {
     label: 'Cool Refreshment',
     title: 'Mountain Fruit Shake',
     description: 'A chilled fruit shake made with refreshing local flavors.',
-    image: unsplash('1623065422902-30a2d299bbe4'), // STOCK
+    image: 'https://res.cloudinary.com/dhxi75eld/image/upload/v1782147243/714363738_122115168621043826_1941352113389072552_n_kiewlo.jpg',
   },
   {
     label: 'Pinoy Favorite',
